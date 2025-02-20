@@ -107,13 +107,6 @@ def calling_search(query: str = Query(..., title="Search Query")):          # QR
     
 
 
-@app.post("/update")
-def calling_update():           # Update in MongoDB and Vector DB-Upsert
-    update()
-
-@app.delete("/delete")
-def calling_delete():           # Deleting in Mongo and VectorDB
-    delete()
 
 
 
