@@ -1,0 +1,10 @@
+__pycache__
+.vscode
+agent.ipynb
+app.ipynb
+search.ipynb
+update.py
+delete.py
+store.ipynb
+
+.env

@@ -1,0 +1,172 @@
+{
+  "json_data": {
+    "Name": "Machine Learning Engineer",
+    "Contact": {
+      "Email": "example@email.com",
+      "Phone_no": "1234567890",
+      "Address": "Random Address",
+      "LinkedIn": "linkedin.com/in/randomprofile",
+      "GitHub": "github.com/randomprofile",
+      "Twitter": "twitter.com/randomprofile"
+    },
+    "Domain": "Machine Learning",
+    "Personal_Projects": [],
+    "Experience": [
+      {
+        "Project_Title": "Senior Machine Learning Engineer",
+        "Company": "Brainly",
+        "Location": "Random Location",
+        "Start_date": "2022-09-01",
+        "End_date": "Present",
+        "Description": "Leading the design and implementation of complex machine learning models, collaborating with cross-functional teams to define project goals and strategies, and mentoring junior team members.",
+        "TechStack": [
+          "Python",
+          "Java",
+          "SQL",
+          "Docker",
+          "AWS",
+          "BigQuery",
+          "Tensorflow",
+          "MongoDB"
+        ],
+        "Client": "",
+        "Role": "Senior Machine Learning Engineer",
+        "Responsibilities": [
+          "Leading the design and implementation of complex machine learning models",
+          "Collaborating with cross-functional teams to define project goals and strategies",
+          "Mentoring junior team members"
+        ]
+      },
+      {
+        "Project_Title": "Machine Learning Engineer",
+        "Company": "Brainly",
+        "Location": "Random Location",
+        "Start_date": "2021-05-01",
+        "End_date": "2022-09-01",
+        "Description": "Designing and developing machine learning models tailored to specific business needs, collaborating with cross-functional teams to gather and preprocess data, selecting and fine-tuning algorithms, and deploying models into production environments.",
+        "TechStack": [
+          "Python",
+          "Java",
+          "SQL",
+          "Docker",
+          "AWS",
+          "BigQuery",
+          "Tensorflow",
+          "MongoDB"
+        ],
+        "Client": "",
+        "Role": "Machine Learning Engineer",
+        "Responsibilities": [
+          "Designing and developing machine learning models",
+          "Collaborating with cross-functional teams to gather and preprocess data",
+          "Selecting and fine-tuning algorithms",
+          "Deploying models into production environments"
+        ]
+      },
+      {
+        "Project_Title": "Senior AI/ML Engineer",
+        "Company": "EY",
+        "Location": "Random Location",
+        "Start_date": "2019-09-01",
+        "End_date": "2021-05-01",
+        "Description": "Leading the design and development of advanced machine learning and artificial intelligence solutions.",
+        "TechStack": [
+          "Python",
+          "Java",
+          "SQL",
+          "Docker",
+          "AWS",
+          "BigQuery",
+          "Tensorflow",
+          "MongoDB"
+        ],
+        "Client": "",
+        "Role": "Senior AI/ML Engineer",
+        "Responsibilities": [
+          "Leading the design and development of advanced machine learning and artificial intelligence solutions"
+        ]
+      },
+      {
+        "Project_Title": "Machine Learning & Software Developer",
+        "Company": "Opera Software AS",
+        "Location": "Random Location",
+        "Start_date": "2016-11-01",
+        "End_date": "2019-09-01",
+        "Description": "Designing, developing, and implementing machine learning algorithms and models to solve complex business problems.",
+        "TechStack": [
+          "Python",
+          "Java",
+          "SQL",
+          "Docker",
+          "AWS",
+          "BigQuery",
+          "Tensorflow",
+          "MongoDB"
+        ],
+        "Client": "",
+        "Role": "Machine Learning & Software Developer",
+        "Responsibilities": [
+          "Designing, developing, and implementing machine learning algorithms and models",
+          "Collaborating with software engineering teams to integrate machine learning components into software applications"
+        ]
+      },
+      {
+        "Project_Title": "Big Data Engineer",
+        "Company": "Crédit Agricole",
+        "Location": "Random Location",
+        "Start_date": "2015-01-01",
+        "End_date": "2015-09-01",
+        "Description": "Bug fixing, database query optimization and software development in general using PL/SQL.",
+        "TechStack": [
+          "PL/SQL"
+        ],
+        "Client": "",
+        "Role": "Big Data Engineer",
+        "Responsibilities": [
+          "Bug fixing",
+          "Database query optimization",
+          "Software development in general using PL/SQL"
+        ]
+      },
+      {
+        "Project_Title": "Intern",
+        "Company": "Crédit Agricole",
+        "Location": "Random Location",
+        "Start_date": "2016-01-01",
+        "End_date": "2019-09-01",
+        "Description": "Applying theoretical knowledge, gaining insights into industry practices, and establishing professional networks.",
+        "TechStack": [],
+        "Client": "",
+        "Role": "Intern",
+        "Responsibilities": [
+          "Applying theoretical knowledge",
+          "Gaining insights into industry practices",
+          "Establishing professional networks"
+        ]
+      }
+    ],
+    "Highest_Qualification": {
+      "Degree": "Master of Science (MSc)",
+      "Institution": "Wroclaw University of Science and Technology",
+      "Score": "Random Score"
+    },
+    "Skills": [
+      "Python",
+      "Java",
+      "SQL",
+      "Docker",
+      "AWS",
+      "BigQuery",
+      "Tensorflow",
+      "MongoDB",
+      "Machine Learning",
+      "Artificial Intelligence",
+      "Data Mining",
+      "Knowledge Representation"
+    ],
+    "Certifications": [],
+    "Awards_and_Recognitions": [],
+    "Research_and_Publications": [],
+    "Other_Details": []
+  }
+}
