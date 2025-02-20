@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from pydantic import BaseModel
 import os
@@ -13,6 +14,17 @@ load_dotenv()
 
 app = FastAPI(debug=True)
 print("App Initialized")
+
+ 
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Allow your React app’s origin
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods (POST, GET, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
+ 
 
 # Load API keys
 NOMIC_API_KEY = os.getenv("NOMIC_API_KEY")
@@ -75,7 +87,6 @@ async def upload_resume(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
     finally:  
         os.remove(file_location)  # Cleanup tahe temporary file
-        print("No Error")
     
     return {"json_data" : uploaded_json}
 
@@ -103,8 +114,3 @@ def calling_search(query: str = Query(..., title="Search Query")):          # QR
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error searching: {str(e)}")
     
-
-
-
-
-

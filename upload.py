@@ -1,20 +1,13 @@
 import os
 import json
 from dotenv import load_dotenv
-from llama_parse import LlamaParse
+from langchain_community.document_loaders import PDFPlumberLoader
 from langchain_nomic import NomicEmbeddings
 from llama_index.core.llms import ChatMessage, MessageRole
 from llama_index.core import ChatPromptTemplate
 from llama_index.llms.groq import Groq
 from datetime import datetime
-import nest_asyncio 
-nest_asyncio.apply()
 load_dotenv()
-
-LLAMAPARSER_API_KEY = os.getenv("LLAMAPARSER_API_KEY")
-
-
-loader = LlamaParse(api_key=LLAMAPARSER_API_KEY, result_type="markdown", verbose=True)
 
 default_dict = {
             "Name": "",
@@ -78,8 +71,9 @@ default_dict = {
 
 
 def get_resume_text(file_path):
-    raw_documents = loader.load_data(file_path=file_path)
-    return "".join(doc.text_resource.text for doc in raw_documents)
+    loader = PDFPlumberLoader(file_path=file_path)
+    raw_documents = loader.load()
+    return "".join(doc.page_content for doc in raw_documents)
 
 def create_prompt(data):
     prompt = f"""
