@@ -6,9 +6,7 @@ from langchain_nomic import NomicEmbeddings
 from langchain_milvus import Milvus
 from langchain_groq import ChatGroq
 from upload import upload
-from update import update
 from search import search
-from delete import delete
 from store import store
 
 load_dotenv()
