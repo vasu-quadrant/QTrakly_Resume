@@ -176,23 +176,42 @@ def get_documents(json_data, QR):
 
     documents = resume_chunking_documents
     uuids = [str(uuid4()) for _ in range(len(documents))]
- 
+
     for i in range(len(documents)):
-        documents[i].id = uuids[i]
         documents[i].metadata["QR"] = QR
         documents[i].metadata["Total_experience"] = round(total_experience,2)
         documents[i].metadata["No_of_Records"] = no_of_records
-       
-    return documents
+    
+    return (documents, uuids)
    
  
 
 def store(json_data, vector_store, QR):
     print("In Store")
     print(json_data)
-    documents = get_documents(json_data, QR)
+    documents, uuids = get_documents(json_data, QR)
+    print(len(documents))
+    print(documents[0].metadata)
+    print("Getting to store")
+    vector_store.add_documents(documents=documents, ids = uuids)
+    print("Successfully Stored")
+    return uuids
+
+
+
+def update(ids, json_data, vector_store, QR):
+    vector_store.delete(ids=ids)
+    documents, uuids = get_documents(json_data, QR)
+    print("deleted succesffuly for uuids", uuids)
     print(len(documents))
     print("Getting to store")
-    vector_store.add_documents(documents=documents)
+    vector_store.add_documents(documents=documents, ids = uuids)
     print("Successfully Stored")
+    return uuids
 
+
+def delete(ids, vector_store):
+    print("In Delete")
+    vector_store.delete(ids=ids)
+    print("Deleted")
+    return ids
