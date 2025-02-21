@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from pydantic import BaseModel
 import os
+import logging
 from langchain_nomic import NomicEmbeddings
 from langchain_milvus import Milvus
 from langchain_groq import ChatGroq
@@ -12,8 +13,25 @@ from store_update_delete import store, update, delete
 
 load_dotenv()
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ 
+formatter = logging.Formatter('%(asctime)s:%(filename)s:%(funcName)s:%(levelname)s:%(message)s')
+ 
+file_Handler = logging.FileHandler('main_log.log')
+file_Handler.setLevel(logging.INFO)
+file_Handler.setFormatter(formatter)
+ 
+stream_Handler = logging.StreamHandler()
+stream_Handler.setFormatter(formatter)
+ 
+ 
+logger.addHandler(file_Handler)
+logger.addHandler(stream_Handler)
+ 
+
 app = FastAPI(debug=True)
-print("App Initialized")
+logger.info("Successfully initialized app")
 
  
 # Add CORS middleware
@@ -36,7 +54,7 @@ MILVUS_URI = os.getenv("MILVUS_URI")
  
 # Initialize embeddings
 embeddings = NomicEmbeddings(model="nomic-embed-text-v1", dimensionality=768, nomic_api_key=NOMIC_API_KEY)
-print("Embeddings Created")
+logger.info("Successfully created embeddings")
 
 # Initialize vector store
 index_params = {
@@ -59,11 +77,11 @@ vector_store = Milvus(
     index_params=index_params,
     enable_dynamic_field = True
 )
-print("Milvus collection initialized")
+logger.info("Milvus collection initialized")
  
 # Initialize LLM
 llm = ChatGroq(model="llama3-70b-8192", temperature=0.3)
-print("LLM Initialized")
+logger.info("Successfully initialized LLM")
 
 
 class ResumeData(BaseModel):
@@ -89,13 +107,13 @@ async def upload_resume(file: UploadFile = File(...)):
         buffer.write(await file.read())
     
     try:
-        print("Uploading function called")
+        logger.info("Uploading function called")
         uploaded_json = upload(file_location, llm, GROQ_API_KEY)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
     finally:  
         os.remove(file_location)  # Cleanup tahe temporary file
-    
+    logger.info(f"Successfully uploaded JSON {uploaded_json}")
     return {"json_data" : uploaded_json}
 
 
@@ -105,7 +123,7 @@ async def upload_resume(file: UploadFile = File(...)):
 def calling_store(resume_data: ResumeData):                 # Need json_data and QR
     """Accepts JSON format data and stores it."""
     try:
-        print("In calling store")
+        logger.info("In calling store")
         uuids = store(resume_data.json_data, vector_store, resume_data.QR)  # Pass JSON data to store function
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error storing data: {str(e)}")
@@ -117,7 +135,8 @@ def calling_store(resume_data: ResumeData):                 # Need json_data and
 def calling_search(query: str = Query(..., title="Search Query")):          # QR, Name, Score, Fields, Resumelink
     """Receives a search query from React.js and returns search results."""
     try:
-        results = search(query, llm, vector_store, GROQ_API_KEY)  # Pass the query to the search function
+        results = search(query, llm, vector_store, GROQ_API_KEY) 
+        logger.info(f"Successfully returned the results{results}") # Pass the query to the search function
         return {"candidates": results}  # Return the search results in JSON format
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error searching: {str(e)}")
@@ -127,18 +146,20 @@ def calling_search(query: str = Query(..., title="Search Query")):          # QR
 @app.post("/update")
 def calling_update(update_request: UpdateRequest):
     try:
-        print("In calling update")
+        logger.info("In calling update")
         updated_ids = update(update_request.ids, update_request.updated_data, vector_store, update_request.QR)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error updating data: {str(e)}")
+    logger.info("Successfully updated the ids")
     return {"updated_ids": updated_ids}
 
 
 @app.post("/delete")
 def calling_update(delete_request: DeleteRequest):
     try:
-        print("In calling Delete")
+        logger.info("In calling Delete")
         updated_ids = delete(delete_request.ids, vector_store)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error Deleting data: {str(e)}")
+    logger.info("Successfully updated the ids")
     return {"Deleted_ids": updated_ids}

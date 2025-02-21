@@ -1,5 +1,6 @@
 import os
 import json
+import logging
 from dotenv import load_dotenv
 from langchain_community.document_loaders import PDFPlumberLoader
 from langchain_nomic import NomicEmbeddings
@@ -7,7 +8,25 @@ from llama_index.core.llms import ChatMessage, MessageRole
 from llama_index.core import ChatPromptTemplate
 from llama_index.llms.groq import Groq
 from datetime import datetime
+
 load_dotenv()
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ 
+formatter = logging.Formatter('%(asctime)s:%(filename)s:%(funcName)s:%(levelname)s:%(message)s')
+ 
+file_Handler = logging.FileHandler('main_log.log')
+file_Handler.setLevel(logging.INFO)
+file_Handler.setFormatter(formatter)
+ 
+stream_Handler = logging.StreamHandler()
+stream_Handler.setFormatter(formatter)
+ 
+ 
+logger.addHandler(file_Handler)
+logger.addHandler(stream_Handler)
+ 
 
 default_dict = {
             "Name": "",
@@ -76,6 +95,7 @@ def get_resume_text(file_path):
     return "".join(doc.page_content for doc in raw_documents)
 
 def create_prompt(data):
+    logger.info("Generating prompt successfully")
     prompt = f"""
         Create a Json format for the below resume details:
         details: {data}
@@ -97,9 +117,11 @@ def create_prompt(data):
     ]
     text_qa_template = ChatPromptTemplate(chat_text_qa_msgs)
     original_prompt = text_qa_template.format_messages(chat_text_qa_msgs)
+    logger.info("Prompt generated successfully")
     return original_prompt
 
 def parse_resume(resume_text, llm, GROQ_API_KEY):
+    logger.info("Parsing using groq")
     prompt = create_prompt(resume_text)
     llm = Groq(model="llama3-70b-8192", temperature=0.1, api_key = GROQ_API_KEY)
     response = llm.chat(prompt)
@@ -111,6 +133,8 @@ def parse_resume(resume_text, llm, GROQ_API_KEY):
 
 
 def upload(file, llm, GROQ_API_KEY):
+    logger.info("In upload")
     resume_text = get_resume_text(file)                      # Get the text formate of Resume
     parsed_resume = parse_resume(resume_text, llm, GROQ_API_KEY)
+    logger.info("Successfully parsed the resume")
     return parsed_resume
