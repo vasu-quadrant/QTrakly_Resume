@@ -1,6 +1,24 @@
 from langchain_core.documents import Document
 from datetime import datetime
 from uuid import uuid4
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ 
+formatter = logging.Formatter('%(asctime)s:%(filename)s:%(funcName)s:%(levelname)s:%(message)s')
+ 
+file_Handler = logging.FileHandler('main_log.log')
+file_Handler.setLevel(logging.INFO)
+file_Handler.setFormatter(formatter)
+ 
+stream_Handler = logging.StreamHandler()
+stream_Handler.setFormatter(formatter)
+ 
+ 
+logger.addHandler(file_Handler)
+logger.addHandler(stream_Handler)
+ 
 
 # Descriptions
 def get_personal_project_description(personal_project):
@@ -136,14 +154,14 @@ def get_documents(json_data, QR):
     no_of_records = 0
     total_experience = 0
  
-    print("Personal Project...")
+    logger.info("Personal Project...")
     if len(json_data["Personal_Projects"])>=1:
-        print("Inside loop")
+        logger.info("Inside loop")
         for exp_index in range(len(json_data["Personal_Projects"])):
             resume_chunking_documents.append(get_doc_project(json_data, exp_index))
             no_of_records += 1
  
-    print("Experience...")
+    logger.info("Experience...")
     if len(json_data["Experience"]):
         for exp_index in range(len(json_data["Experience"])):
             resume_chunking_documents.append(get_doc_experience(json_data, exp_index))
@@ -152,23 +170,23 @@ def get_documents(json_data, QR):
             total_experience += get_dates_difference(json_data["Experience"][exp_index]["Start_date"] ,json_data["Experience"][exp_index]["End_date"])
             no_of_records += 1
  
-    print("Certifications...")
+    logger.info("Certifications...")
     if len(json_data["Certifications"]):
         for exp_index in range(len(json_data["Certifications"])):
             resume_chunking_documents.append(get_doc_certifications(json_data, exp_index))
             no_of_records += 1
  
-    print("Skills...")
+    logger.info("Skills...")
     if len(json_data["Skills"]):
         resume_chunking_documents.append(get_doc_skills(json_data))
         no_of_records += 1
  
-    print("Awards and Recognitions...")
+    logger.info("Awards and Recognitions...")
     if len(json_data["Awards_and_Recognitions"]):
         resume_chunking_documents.append(get_doc_recognitions(json_data))
         no_of_records += 1
  
-    print("Reasearch and Publications...")
+    logger.info("Reasearch and Publications...")
     if len(json_data["Research_and_Publications"]):
         for exp_index in range(len(json_data["Research_and_Publications"])):
             resume_chunking_documents.append(get_doc_publications(json_data, exp_index))
@@ -181,37 +199,29 @@ def get_documents(json_data, QR):
         documents[i].metadata["QR"] = QR
         documents[i].metadata["Total_experience"] = round(total_experience,2)
         documents[i].metadata["No_of_Records"] = no_of_records
-    
+    logger.info("Document are ready to return")
     return (documents, uuids)
    
  
 
 def store(json_data, vector_store, QR):
-    print("In Store")
-    print(json_data)
+    logger.info("In Store")
+    logger.info(json_data)
     documents, uuids = get_documents(json_data, QR)
-    print(len(documents))
-    print(documents[0].metadata)
-    print("Getting to store")
+    logger.info(f"{len(documents)} documents are getting to store")
     vector_store.add_documents(documents=documents, ids = uuids)
-    print("Successfully Stored")
+    logger.info("Successfully Stored")
     return uuids
 
 
 
 def update(ids, json_data, vector_store, QR):
     vector_store.delete(ids=ids)
-    documents, uuids = get_documents(json_data, QR)
-    print("deleted succesffuly for uuids", uuids)
-    print(len(documents))
-    print("Getting to store")
-    vector_store.add_documents(documents=documents, ids = uuids)
-    print("Successfully Stored")
-    return uuids
+    return store(json_data, vector_store, QR)
 
 
 def delete(ids, vector_store):
-    print("In Delete")
+    logger.info("In Delete")
     vector_store.delete(ids=ids)
-    print("Deleted")
+    logger.info("Successfully Deleted")
     return ids

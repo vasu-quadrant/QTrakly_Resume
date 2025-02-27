@@ -100,6 +100,7 @@ class DeleteRequest(BaseModel):
 async def upload_resume(file: UploadFile = File(...)):
     """Accepts a PDF file from the frontend and passes it to the upload function."""
     if file.content_type != "application/pdf":
+        logger.exception(f"Error storing data: {str(e)}")
         raise HTTPException(status_code=400, detail="Only PDF files are allowed")
     
     file_location = f"temp_{file.filename}"
@@ -110,10 +111,11 @@ async def upload_resume(file: UploadFile = File(...)):
         logger.info("Uploading function called")
         uploaded_json = upload(file_location, llm, GROQ_API_KEY)
     except Exception as e:
+        logger.exception(f"Error storing data: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
     finally:  
         os.remove(file_location)  # Cleanup tahe temporary file
-    logger.info(f"Successfully uploaded JSON {uploaded_json}")
+    logger.info(f"Successfully uploaded JSON")
     return {"json_data" : uploaded_json}
 
 
@@ -126,6 +128,7 @@ def calling_store(resume_data: ResumeData):                 # Need json_data and
         logger.info("In calling store")
         uuids = store(resume_data.json_data, vector_store, resume_data.QR)  # Pass JSON data to store function
     except Exception as e:
+        logger.exception(f"Error storing data: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error storing data: {str(e)}")
     return {"ids": uuids}
 
@@ -139,27 +142,30 @@ def calling_search(query: str = Query(..., title="Search Query")):          # QR
         logger.info(f"Successfully returned the results{results}") # Pass the query to the search function
         return {"candidates": results}  # Return the search results in JSON format
     except Exception as e:
+        logger.exception(f"Error storing data: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error searching: {str(e)}")
     
 
 
-@app.post("/update")
+@app.put("/update")
 def calling_update(update_request: UpdateRequest):
     try:
         logger.info("In calling update")
         updated_ids = update(update_request.ids, update_request.updated_data, vector_store, update_request.QR)
     except Exception as e:
+        logger.exception(f"Error storing data: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error updating data: {str(e)}")
     logger.info("Successfully updated the ids")
     return {"updated_ids": updated_ids}
 
 
-@app.post("/delete")
+@app.delete("/delete")
 def calling_update(delete_request: DeleteRequest):
     try:
         logger.info("In calling Delete")
         updated_ids = delete(delete_request.ids, vector_store)
     except Exception as e:
+        logger.exception(f"Error storing data: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error Deleting data: {str(e)}")
     logger.info("Successfully updated the ids")
     return {"Deleted_ids": updated_ids}

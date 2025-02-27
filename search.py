@@ -1,4 +1,21 @@
+import logging
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ 
+formatter = logging.Formatter('%(asctime)s:%(filename)s:%(funcName)s:%(levelname)s:%(message)s')
+ 
+file_Handler = logging.FileHandler('search.log')
+file_Handler.setLevel(logging.INFO)
+file_Handler.setFormatter(formatter)
+ 
+stream_Handler = logging.StreamHandler()
+stream_Handler.setFormatter(formatter)
+ 
+ 
+logger.addHandler(file_Handler)
+logger.addHandler(stream_Handler)
+ 
 
 # Rewritten Query
 def rewrite_query(query, llm, GROQ_API_KEY):
@@ -12,7 +29,6 @@ def rewrite_query(query, llm, GROQ_API_KEY):
             - Provide only the result in Bold letters, no additional text.
         """),
     ]
-    print("Prompt")
     return llm.invoke(prompt).content.split("**")[1]
 
 
@@ -98,11 +114,10 @@ def reranker(relevant_results):
 
 
 def search(query, llm, vector_store, GROQ_API_KEY):
-    print("In Search", query)
+    logger.info("In Search", query)
     rewritten_query = rewrite_query(query, llm, GROQ_API_KEY)
-    print("Rewritten Query:", rewritten_query)
+    logger.info("Rewritten Query:", rewritten_query)
     relevent_documents = retriever(rewritten_query, vector_store)
-    print("Relevant Documents")
+    logger.info("Relevant Documents Retrieved")
     candidates_list = reranker(relevent_documents)
-    print(candidates_list)
     return candidates_list
